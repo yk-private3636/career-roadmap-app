@@ -1,0 +1,94 @@
+name: Check Infra Workflow
+
+on:
+  workflow_call:
+    inputs:
+      github_owner:
+        required: true
+        type: string
+      github_repo:
+        required: true
+        type: string
+    secrets:
+      GITHUB_PAT:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+
+jobs:
+  check-infra:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        env: [prod]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_PAT }}
+          fetch-depth: 1
+          sparse-checkout: 'infra'
+
+      - name: Configure AWS Credentials for Japan region audience
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          audience: sts.amazonaws.com
+          aws-region: ap-northeast-1
+          role-to-assume: "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-career-roadmap-app-terraform-role"
+       
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@v0.2.3
+        with:
+          version: v0.68.1
+            
+      - name: Set Terraform version from Dockerfile
+        id: docker-terraform-version
+        working-directory: infra
+        run: |
+          echo "TERRAFORM_VERSION=$(grep -m 1 BASE_IMAGE ./Dockerfile | awk -F : '{print $2}' | awk -F - '{print $1}' | sed 's/^$/latest/')" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{  steps.docker-terraform-version.outputs.TERRAFORM_VERSION }}
+          
+      - name: Terraform Fmt Check
+        working-directory: infra/src/envs
+        run: terraform -chdir=${{ matrix.env }} fmt -check
+
+      - name: Terraform Init
+        working-directory: infra/src/envs
+        run: terraform -chdir=${{ matrix.env }} init -input=false -no-color
+      
+      - name: Terraform Validate Check
+        working-directory: infra/src/envs
+        run: terraform -chdir=${{ matrix.env }} validate -no-color
+
+      - name: Setup terraform variables
+        working-directory: infra/src/envs
+        run: |
+          cat << EOF > ./${{ matrix.env }}/terraform.tfvars
+          env                                   = "${{ matrix.env }}"
+          project_name                          = "topsic-portal-app"
+          aws_region                            = ["ap-northeast-1", "ap-northeast-3"]
+          aws_az                                = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
+          account_id                            = "${{ secrets.AWS_ACCOUNT_ID }}"
+          github_owner                          = "${{ inputs.github_owner }}"
+          github_repo                           = "${{ inputs.github_repo }}"
+          terraform_assume_role_arn             = "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-career-roadmap-app-terraform-role"
+          EOF
+
+      - name: Terraform Plan Check
+        working-directory: infra/src/envs
+        run: terraform -chdir=${{ matrix.env }} plan --out /tmp/tfplan -input=false -no-color -lock=false
+
+      - name: Trivy Infrastructure as Code Scan
+        run: trivy config --severity HIGH,CRITICAL --exit-code 1 /tmp/tfplan
+
+      - name: Clean up terraform.tfvars
+        if: ${{ always() }}
+        run: rm -f ./infra/src/envs/${{ matrix.env }}/terraform.tfvars
