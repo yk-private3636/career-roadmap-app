@@ -15,5 +15,11 @@ data "aws_iam_policy_document" "terraform_assume_role_policy" {
         "arn:aws:iam::${var.account_id}:user/career-roadmap-app-terraform",
       ]
     }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:MultiFactorAuthPresent"
+      values   = ["true"]
+    }
   }
 }
