@@ -13,13 +13,23 @@ data "aws_iam_policy_document" "terraform_assume_role_policy" {
       type = "AWS"
       identifiers = [
         "arn:aws:iam::${var.account_id}:user/career-roadmap-app-terraform",
-        "arn:aws:sts::${var.account_id}:assumed-role/${local.terraform_role_name}/GitHubActions"
       ]
     }
     condition {
       test     = "Bool"
       variable = "aws:MultiFactorAuthPresent"
       values   = ["true"]
+    }
+  }
+
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:sts::${var.account_id}:assumed-role/${local.terraform_role_name}/GitHubActions"
+      ]
     }
   }
 
