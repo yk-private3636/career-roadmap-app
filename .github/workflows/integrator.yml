@@ -1,0 +1,17 @@
+name: Integrator
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  integrator:
+    uses: ./.github/workflows/ci.yml
+    secrets:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
