@@ -2,13 +2,6 @@ name: Check Infra Workflow
 
 on:
   workflow_call:
-    inputs:
-      github_owner:
-        required: true
-        type: string
-      github_repo:
-        required: true
-        type: string
     secrets:
       GITHUB_PAT:
         required: true
@@ -77,8 +70,6 @@ jobs:
           aws_region                            = ["ap-northeast-1", "ap-northeast-3"]
           aws_az                                = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
           account_id                            = "${{ secrets.AWS_ACCOUNT_ID }}"
-          github_owner                          = "${{ inputs.github_owner }}"
-          github_repo                           = "${{ inputs.github_repo }}"
           terraform_assume_role_arn             = "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-career-roadmap-app-terraform-role"
           EOF
 

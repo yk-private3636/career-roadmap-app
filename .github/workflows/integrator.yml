@@ -12,9 +12,6 @@ permissions:
 jobs:
   integrator:
     uses: ./.github/workflows/ci.yml
-    with:
-      github_owner: "yk-private3636"
-      github_repo: "career-roadmap-app"
     secrets:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
