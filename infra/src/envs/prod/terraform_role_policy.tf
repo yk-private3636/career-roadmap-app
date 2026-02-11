@@ -73,8 +73,34 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "ec2:CreateTags",
       "ec2:DeleteTags",
     ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:CreateRepository",
+      "ecr:CreateLifecyclePolicy",
+      "ecr:TagResource",
+      "ecr:ListTagsForResource",
+      "ecr:DescribeRepositories",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:DeleteRepository",
+      "ecr:DeleteLifecyclePolicy",
+      "ecr:PutLifecyclePolicy",
+      "ecr:PutImageTagMutability",
+      "ecr:UntagResource",
+      "ecr:GetLifecyclePolicy",
+    ]
     resources = [
-      "*"
+      "arn:aws:ecr:${var.aws_region[0]}:${var.account_id}:repository/${local.ecr_repository_name}",
+      "arn:aws:ecr:${var.aws_region[0]}:${var.account_id}:repository/${local.ecr_repository_name}/*",
     ]
   }
 }
