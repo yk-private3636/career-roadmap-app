@@ -11,8 +11,7 @@ RUN apk update && \
     ls -1 /usr/share/zoneinfo/ | grep -vx Asia | xargs -I {} rm -r /usr/share/zoneinfo/{}
 
 RUN adduser -D infra
-RUN chown -R infra:infra /home/infra
 
-USER infra
+# USER infra
 
 ENTRYPOINT [ "tail", "-f", "/dev/null" ]
