@@ -1,6 +1,7 @@
-ARG BASE_IMAGE=golang:1.25.6-alpine
+ARG GO_BASE_IMAGE=golang:1.25.8-alpine3.23@sha256:8e02eb337d9e0ea459e041f1ee5eece41cbb61f1d83e7d883a3e2fb4862063fa
+ARG PROD_BASE_IMAGE=alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
 
-FROM ${BASE_IMAGE} AS local
+FROM ${GO_BASE_IMAGE} AS local
 
 EXPOSE 8080
 WORKDIR /src
@@ -19,7 +20,7 @@ ENTRYPOINT [ "entrypoint.sh" ]
 CMD [ "air" ]
 
 
-FROM ${BASE_IMAGE} AS build
+FROM ${GO_BASE_IMAGE} AS build
 
 ENV GOOS=linux
 ENV GOARCH=amd64
@@ -32,7 +33,7 @@ RUN go mod tidy
 RUN go build -o main main.go
 
 
-FROM alpine:3.23.3 AS prod
+FROM ${PROD_BASE_IMAGE} AS prod
 
 EXPOSE 8080
 WORKDIR /src
