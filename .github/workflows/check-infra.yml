@@ -34,9 +34,9 @@ jobs:
           role-to-assume: "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-career-roadmap-app-terraform-role"
        
       - name: Install Trivy
-        uses: aquasecurity/setup-trivy@v0.2.3
+        uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
         with:
-          version: v0.68.1
+          version: v0.69.3
             
       - name: Set Terraform version from Dockerfile
         id: docker-terraform-version
