@@ -6,9 +6,10 @@ WORKDIR /home/infra/src/envs
 
 RUN apk update && \
     apk add --no-cache tzdata && \
-    rm -rf /var/cache/apk/* && \
-    ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
-    ls -1 /usr/share/zoneinfo/ | grep -vx Asia | xargs -I {} rm -r /usr/share/zoneinfo/{}
+    rm -rf /var/cache/apk/*
+
+RUN cp -r /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+RUN apk del tzdata
 
 RUN adduser -D infra
 
