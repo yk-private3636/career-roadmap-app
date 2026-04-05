@@ -21,11 +21,15 @@ FROM ${GO_BASE_IMAGE} AS build
 
 ENV GOOS=linux
 ENV GOARCH=amd64
+ENV CGO_ENABLED=0
 WORKDIR /src
 
-COPY ./src /src/
+COPY ./src/go.mod /src/go.mod
+COPY ./src/go.sum /src/go.sum
 
-RUN go mod tidy
+RUN go mod download
+
+COPY ./src /src/
 
 RUN go build -o main main.go
 
