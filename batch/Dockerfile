@@ -6,8 +6,8 @@ FROM ${GO_BASE_IMAGE} AS local
 WORKDIR /src
 
 RUN go install github.com/air-verse/air@v1.61.7
-RUN go install github.com/google/wire/cmd/wire@latest
-RUN go install go.uber.org/mock/mockgen@latest
+RUN go install github.com/google/wire/cmd/wire@v0.7.0
+RUN go install go.uber.org/mock/mockgen@v0.6.0
 
 COPY ./entrypoint_local.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh

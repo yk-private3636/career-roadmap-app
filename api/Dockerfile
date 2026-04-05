@@ -7,11 +7,9 @@ EXPOSE 8080
 WORKDIR /src
 
 RUN go install github.com/air-verse/air@v1.61.7
-RUN go install github.com/parvez3019/go-swagger3@latest
-RUN go install github.com/google/wire/cmd/wire@latest
-RUN go install go.uber.org/mock/mockgen@latest
-RUN apk update && \
-apk add apache2-utils
+RUN go install github.com/parvez3019/go-swagger3@1.0.3
+RUN go install github.com/google/wire/cmd/wire@v0.7.0
+RUN go install go.uber.org/mock/mockgen@v0.6.0
 
 COPY ./entrypoint_local.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
