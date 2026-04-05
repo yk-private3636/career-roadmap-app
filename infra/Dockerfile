@@ -1,6 +1,6 @@
-ARG BASE_IMAGE=hashicorp/terraform:1.14.4
+ARG TERRAFORM_BASE_IMAGE=hashicorp/terraform:1.14.8@sha256:42ecfb253183ec823646dd7859c5652039669409b44daa72abf57112e622849a
 
-FROM ${BASE_IMAGE} AS local
+FROM ${TERRAFORM_BASE_IMAGE} AS local
 
 WORKDIR /home/infra/src/envs
 

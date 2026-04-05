@@ -1,4 +1,7 @@
-FROM jaegertracing/all-in-one:latest AS local
+ARG JAEGER_BASE_IMAGE=jaegertracing/all-in-one:1.76.0@sha256:ab6f1a1f0fb49ea08bcd19f6b84f6081d0d44b364b6de148e1798eb5816bacac
+ARG DATADOG_BASE_IMAGE=datadog/agent:7.73.1@sha256:daad014753b3b9c946ac3f7a18d7554d66363b216aef9ad8701af1dd52326795
+
+FROM ${JAEGER_BASE_IMAGE} AS local
 
 
-FROM datadog/agent:7.73.1 AS prod
+FROM ${DATADOG_BASE_IMAGE} AS prod
