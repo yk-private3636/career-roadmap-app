@@ -27,7 +27,7 @@ jobs:
           sparse-checkout: 'infra'
 
       - name: Configure AWS Credentials for Japan region audience
-        uses: aws-actions/configure-aws-credentials@v5.1.0
+        uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
           audience: sts.amazonaws.com
           aws-region: ap-northeast-1
