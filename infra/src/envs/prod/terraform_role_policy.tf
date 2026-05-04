@@ -63,6 +63,7 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "ec2:CreateSubnet",
       "ec2:DeleteSubnet",
       "ec2:DescribeSubnets",
+      "ec2:DescribeNetworkInterfaces",
       "ec2:CreateRouteTable",
       "ec2:DeleteRouteTable",
       "ec2:AssociateRouteTable",
@@ -80,7 +81,6 @@ data "aws_iam_policy_document" "terraform_role_policy" {
     effect = "Allow"
     actions = [
       "ecr:CreateRepository",
-      "ecr:CreateLifecyclePolicy",
       "ecr:TagResource",
       "ecr:ListTagsForResource",
       "ecr:DescribeRepositories",

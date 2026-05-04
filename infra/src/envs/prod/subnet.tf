@@ -1,5 +1,5 @@
 resource "aws_subnet" "public" {
-  count             = 2
+  count             = 3
   vpc_id            = aws_vpc.main.id
   availability_zone = var.aws_az[count.index]
   cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
@@ -10,7 +10,7 @@ resource "aws_subnet" "public" {
 }
 
 resource "aws_subnet" "private" {
-  count             = 2
+  count             = 3
   vpc_id            = aws_vpc.main.id
   availability_zone = var.aws_az[count.index]
   cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, length(aws_subnet.public) + count.index)
