@@ -8,7 +8,8 @@
 
 ## ドキュメント
 
-詳細は [`docs/`](./docs/) を参照。
+詳細は [`docs/`](./docs/) を参照。  
+ローカル環境構築手順及び注意点に関しては [`docs/setup_guide.md`](./docs/setup_guide.md) にまとめている。
 
 ## アーキテクチャ
 
