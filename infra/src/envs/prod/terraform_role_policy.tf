@@ -80,7 +80,6 @@ data "aws_iam_policy_document" "terraform_role_policy" {
     effect = "Allow"
     actions = [
       "ecr:CreateRepository",
-      "ecr:CreateLifecyclePolicy",
       "ecr:TagResource",
       "ecr:ListTagsForResource",
       "ecr:DescribeRepositories",
