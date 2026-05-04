@@ -67,6 +67,7 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "ec2:CreateRouteTable",
       "ec2:DeleteRouteTable",
       "ec2:AssociateRouteTable",
+      "ec2:DescribeInternetGateways",
       "ec2:CreateInternetGateway",
       "ec2:DeleteInternetGateway",
       "ec2:AttachInternetGateway",
