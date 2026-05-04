@@ -21,9 +21,7 @@ CMD [ "air" ]
 
 FROM ${GO_BASE_IMAGE} AS build
 
-ENV GOOS=linux
-ENV GOARCH=amd64
-ENV CGO_ENABLED=0
+ENV GOOS=linux GOARCH=amd64 CGO_ENABLED=0
 WORKDIR /src
 
 COPY ./src/go.mod /src/go.mod

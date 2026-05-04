@@ -4,7 +4,7 @@ ARG PROD_BASE_IMAGE=alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a20
 FROM ${GO_BASE_IMAGE} AS local
  
 ENV GOOS=linux GOARCH=amd64
-WORKDIR /app
+WORKDIR /src
  
 RUN apk update && \
     apk add --no-cache tzdata && \
@@ -24,7 +24,7 @@ ENTRYPOINT [ "tail", "-f", "/dev/null" ]
 FROM ${GO_BASE_IMAGE} AS build
  
 ARG BUILD_TARGET
-ENV GOOS=linux GOARCH=amd64
+ENV GOOS=linux GOARCH=amd64 CGO_ENABLED=0
 WORKDIR /src/${BUILD_TARGET}
  
 COPY ./src/${BUILD_TARGET}/go.mod ./
@@ -32,7 +32,7 @@ COPY ./src/${BUILD_TARGET}/go.sum ./
  
 RUN go mod download
  
-COPY ./src/${BUILD_TARGET}/* ./
+COPY ./src/${BUILD_TARGET}/ ./
  
 RUN go build -a -o ./main
  
