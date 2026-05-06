@@ -83,6 +83,8 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "iam:DeleteRolePolicy",
       "iam:UpdateAssumeRolePolicy",
       "iam:UntagRole",
+      "iam:AttachRolePolicy",
+      "iam:DetachRolePolicy",
     ]
     resources = [
       "arn:aws:iam::${var.account_id}:role/${local.name}-*"
@@ -101,6 +103,8 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "iam:CreateOpenIDConnectProvider",
       "iam:DeleteOpenIDConnectProvider",
       "iam:PassRole",
+      "iam:CreateServiceLinkedRole",
+      "iam:RemoveRoleFromInstanceProfile",
     ]
     resources = ["*"]
   }
@@ -120,13 +124,31 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "ec2:CreateRouteTable",
       "ec2:DeleteRouteTable",
       "ec2:AssociateRouteTable",
+      "ec2:DisassociateRouteTable",
+      "ec2:DescribeRouteTables",
+      "ec2:CreateRoute",
+      "ec2:DeleteRoute",
       "ec2:DescribeInternetGateways",
       "ec2:CreateInternetGateway",
       "ec2:DeleteInternetGateway",
       "ec2:AttachInternetGateway",
       "ec2:DetachInternetGateway",
+      "ec2:CreateNatGateway",
+      "ec2:DeleteNatGateway",
+      "ec2:DescribeNatGateways",
+      "ec2:AllocateAddress",
+      "ec2:ReleaseAddress",
+      "ec2:DescribeAddresses",
       "ec2:CreateTags",
       "ec2:DeleteTags",
+      "ec2:CreateSecurityGroup",
+      "ec2:DeleteSecurityGroup",
+      "ec2:DescribeSecurityGroups",
+      "ec2:RevokeSecurityGroupIngress",
+      "ec2:RevokeSecurityGroupEgress",
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:AuthorizeSecurityGroupEgress",
+      "ec2:DescribeSecurityGroupRules",
     ]
     resources = ["*"]
   }
@@ -156,6 +178,47 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "arn:aws:ecr:${var.aws_region[0]}:${var.account_id}:repository/${local.ecr_repository_name}",
       "arn:aws:ecr:${var.aws_region[0]}:${var.account_id}:repository/${local.ecr_repository_name}/*",
     ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "eks:CreateCluster",
+      "eks:DeleteCluster",
+      "eks:UpdateClusterVersion",
+      "eks:UpdateClusterConfig",
+      "eks:DescribeUpdate",
+    ]
+    resources = [
+      "arn:aws:eks:${var.aws_region[0]}:${var.account_id}:cluster/${local.eks_cluster_name}"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "eks:DeleteAccessEntry",
+    ]
+    resources = [
+      "arn:aws:eks:ap-northeast-1:${var.account_id}:access-entry/${local.name}-*"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "eks:DescribeCluster",
+      "eks:ListClusters",
+      "eks:DescribeNodegroup",
+      "eks:ListNodegroups",
+      "eks:CreateNodegroup",
+      "eks:DeleteNodegroup",
+      "eks:DescribeAccessEntry",
+      "eks:TagResource",
+      "eks:UntagResource",
+      "eks:CreateAccessEntry",
+    ]
+    resources = ["*"]
   }
 }
 
