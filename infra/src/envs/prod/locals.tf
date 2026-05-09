@@ -9,10 +9,9 @@ locals {
 
   ecr_repository_name = "${local.name}-repository"
 
-  eks_cluster_name           = "${local.name}-eks-cluster"
-  eks_cluster_role_name      = "${local.name}-eks-cluster-role"
-  eks_node_group_name        = "${local.name}-eks-node-group"
-  eks_node_group_role_name   = "${local.name}-eks-node-group-role"
-  eks_node_group_policy_name = "${local.name}-eks-node-group-policy"
-  eks_cluster_sg_name        = "${local.name}-eks-cluster-sg"
+  eks_cluster_name         = "${local.name}-eks-cluster"
+  eks_cluster_role_name    = "${local.name}-eks-cluster-role"
+  eks_node_group_name      = "${local.name}-eks-node-group"
+  eks_node_group_role_name = "${local.name}-eks-node-group-role"
+  eks_cluster_sg_name      = "${local.name}-eks-cluster-sg"
 }

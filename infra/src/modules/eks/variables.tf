@@ -50,3 +50,7 @@ variable "node_group_policies" {
 variable "admin_principal_arn" {
     type = string
 }
+
+variable "ecr_arn" {
+    type = string
+}

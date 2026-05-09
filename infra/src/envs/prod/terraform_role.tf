@@ -149,6 +149,7 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "ec2:AuthorizeSecurityGroupIngress",
       "ec2:AuthorizeSecurityGroupEgress",
       "ec2:DescribeSecurityGroupRules",
+      "ec2:ModifySecurityGroupRules"
     ]
     resources = ["*"]
   }

@@ -3,6 +3,7 @@ resource "aws_eks_cluster" "main" {
     role_arn = aws_iam_role.cluster.arn
     version = "1.31"
     deletion_protection = true
+    bootstrap_self_managed_addons = true
     vpc_config {
         endpoint_public_access = true
         endpoint_private_access = true
@@ -34,7 +35,7 @@ resource "aws_eks_node_group" "main" {
     cluster_name = aws_eks_cluster.main.name
     node_group_name = var.node_group_name
     node_role_arn = aws_iam_role.node_group.arn
-    ami_type =  "AL2_x86_64"
+    ami_type =  "AL2_x86_64" 
     instance_types = var.node_group_instance_types
     disk_size = var.node_group_disk_size
     subnet_ids = var.private_subnet_ids
@@ -48,11 +49,16 @@ resource "aws_eks_node_group" "main" {
     }
 }
 
-resource "aws_eks_access_entry" "main" {
-  for_each = tomap({ for idx, arn in [var.admin_principal_arn, aws_iam_role.node_group.arn] : idx => arn })
-  cluster_name = aws_eks_cluster.main.name
-  principal_arn = each.value
-  type = "STANDARD"
+resource "aws_eks_access_entry" "admin" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.admin_principal_arn
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_entry" "node_group" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = aws_iam_role.node_group.arn
+  type          = "EC2_LINUX"
 }
 
 resource "aws_iam_role" "cluster" {
@@ -98,10 +104,115 @@ resource "aws_iam_role" "node_group" {
   })
 }
 
-resource "aws_iam_role_policy" "node_group" {
+resource "aws_iam_role_policy_attachment" "node_group_AmazonEKSWorkerNodePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.node_group.name
+}
+
+resource "aws_iam_role_policy_attachment" "node_group_AmazonEKS_CNI_Policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.node_group.name
+}
+
+resource "aws_iam_role_policy_attachment" "node_group_AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.node_group.name
+}
+
+# data "aws_iam_policy_document" "ecr_access_policy" {
+#   statement {
+#     effect = "Allow"
+#     actions = [
+#       "ecr:GetAuthorizationToken",
+#       "ecr:BatchCheckLayerAvailability",
+#       "ecr:GetDownloadUrlForLayer",
+#       "ecr:GetRepositoryPolicy",
+#       "ecr:DescribeRepositories",
+#       "ecr:ListImages",
+#       "ecr:DescribeImages",
+#       "ecr:BatchGetImage",
+#       "ecr:GetLifecyclePolicy",
+#       "ecr:GetLifecyclePolicyPreview",
+#       "ecr:ListTagsForResource",
+#       "ecr:DescribeImageScanFindings"
+#     ]
+#     resources = [
+#       var.ecr_arn,
+#       "${var.ecr_arn}/*"
+#     ]
+#   }
+# }
+
+# data "aws_iam_policy_document" "eks_access_policy" {
+#   statement {
+#     effect = "Allow"
+#     actions = [
+#       "ec2:DescribeInstances",
+#       "ec2:DescribeInstanceTypes",
+#       "ec2:DescribeRouteTables",
+#       "ec2:DescribeSecurityGroups",
+#       "ec2:DescribeSubnets",
+#       "ec2:DescribeVolumes",
+#       "ec2:DescribeVolumesModifications",
+#       "ec2:DescribeVpcs",
+#       "eks:DescribeCluster",
+#       "eks-auth:AssumeRoleForPodIdentity"
+#     ]
+#     resources = [
+#       aws_eks_cluster.main.arn
+#     ]
+#   } 
+# }
+
+# data "aws_iam_policy_document" "eks_cni_policy" {
+#   statement {
+#     effect = "Allow"
+#     actions = [
+#       "ec2:AssignPrivateIpAddresses",
+#       "ec2:AttachNetworkInterface",
+#       "ec2:CreateNetworkInterface",
+#       "ec2:DeleteNetworkInterface",
+#       "ec2:DescribeInstances",
+#       "ec2:DescribeTags",
+#       "ec2:DescribeNetworkInterfaces",
+#       "ec2:DescribeInstanceTypes",
+#       "ec2:DescribeSubnets",
+#       "ec2:DescribeSecurityGroups",
+#       "ec2:DetachNetworkInterface",
+#       "ec2:ModifyNetworkInterfaceAttribute",
+#       "ec2:UnassignPrivateIpAddresses"
+#     ]
+#     resources = ["*"]
+#   }
+#   statement {
+#     effect = "Allow"
+#     actions = [
+#       "ec2:CreateTags"
+#     ]
+#     resources = [
+#       "arn:aws:ec2:*:*:network-interface/*"
+#     ]
+#   }
+# }
+
+# resource "aws_iam_role_policy" "ecr_access_policy" {
+#   policy = data.aws_iam_policy_document.ecr_access_policy.json
+#   role       = aws_iam_role.node_group.name
+# }
+
+# resource "aws_iam_role_policy" "eks_access_policy" {
+#   policy = data.aws_iam_policy_document.eks_access_policy.json
+#   role       = aws_iam_role.node_group.name
+# }
+
+# resource "aws_iam_role_policy" "eks_cni_policy" {
+#   policy = data.aws_iam_policy_document.eks_cni_policy.json
+#   role       = aws_iam_role.node_group.name
+# }
+
+resource "aws_iam_role_policy" "add_node_group_policy" {
   for_each = var.node_group_policies
 
-  name   = each.key
-  role   = aws_iam_role.node_group.id
   policy = each.value
+  role = aws_iam_role.node_group.name
 }

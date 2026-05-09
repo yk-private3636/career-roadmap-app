@@ -15,9 +15,8 @@ module "eks" {
     max     = 5
     desired = 3
   }
-  node_group_policies = {
-    (local.eks_node_group_policy_name) = data.aws_iam_policy_document.esk_ecr_access_policy.json
-  }
+  ecr_arn             = module.ecr.arn
+  node_group_policies = {}
 }
 
 resource "aws_security_group" "eks_cluster" {
@@ -39,20 +38,4 @@ resource "aws_vpc_security_group_egress_rule" "eks_cluster" {
   ip_protocol       = "tcp"
   security_group_id = aws_security_group.eks_cluster.id
   cidr_ipv4         = aws_vpc.main.cidr_block
-}
-
-data "aws_iam_policy_document" "esk_ecr_access_policy" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "ecr:BatchCheckLayerAvailability",
-      "ecr:BatchGetImage",
-      "ecr:GetDownloadUrlForLayer",
-      "ecr:GetAuthorizationToken"
-    ]
-    resources = [
-      module.ecr.arn,
-      "${module.ecr.arn}/*"
-    ]
-  }
 }
