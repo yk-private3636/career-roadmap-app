@@ -61,6 +61,15 @@ resource "aws_eks_access_entry" "node_group" {
   type          = "EC2_LINUX"
 }
 
+resource "aws_eks_access_policy_association" "admin" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.admin_principal_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  access_scope {
+    type = "cluster"
+  }
+}
+
 resource "aws_iam_role" "cluster" {
   name = var.cluster_iam_role_name
   assume_role_policy = jsonencode({
