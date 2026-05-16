@@ -221,9 +221,28 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "eks:CreateAccessEntry",
       "eks:ListAssociatedAccessPolicies",
       "eks:DisassociateAccessPolicy",
-      "eks:AssociateAccessPolicy"
+      "eks:AssociateAccessPolicy",
+      "eks:AssociateEncryptionConfig"
     ]
     resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:TagResource",
+      "kms:CreateKey",
+      "kms:ListResourceTags",
+      "kms:DescribeKey",
+      "kms:GetKeyPolicy",
+      "kms:GetKeyRotationStatus",
+      "kms:ScheduleKeyDeletion",
+      "kms:PutKeyPolicy",
+      "kms:CreateGrant"
+    ]
+    resources = [
+      "*"
+    ]
   }
 }
 

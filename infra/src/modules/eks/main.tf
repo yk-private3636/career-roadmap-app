@@ -5,7 +5,7 @@ resource "aws_eks_cluster" "main" {
     deletion_protection = true
     bootstrap_self_managed_addons = true
     vpc_config {
-        endpoint_public_access = true
+        endpoint_public_access = false
         endpoint_private_access = true
         subnet_ids = concat(var.public_subnet_ids, var.private_subnet_ids)
         security_group_ids = var.cluster_security_group_ids
@@ -26,6 +26,12 @@ resource "aws_eks_cluster" "main" {
         block_storage {
           enabled = false
         }
+    }
+    encryption_config {
+      provider {
+        key_arn = aws_kms_key.eks_secrets.arn
+      }
+      resources = [ "secrets" ]
     }
 
     depends_on = [ aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy ]
@@ -126,6 +132,54 @@ resource "aws_iam_role_policy_attachment" "node_group_AmazonEKS_CNI_Policy" {
 resource "aws_iam_role_policy_attachment" "node_group_AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.node_group.name
+}
+
+resource "aws_kms_key" "eks_secrets" {
+  description = "EKS secrets encryption"
+}
+
+resource "aws_kms_key_policy" "eks" {
+  key_id = aws_kms_key.eks_secrets.id
+  bypass_policy_lockout_safety_check = false
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "eks.amazonaws.com"
+        },
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:CreateGrant",
+          "kms:DescribeKey"
+        ],
+        Resource = "*"
+      },
+      {
+        Effect = "Allow",
+        Principal = {
+          AWS = var.admin_principal_arn
+        },
+        Action = [
+          "kms:Create*",
+          "kms:Describe*",
+          "kms:Enable*",
+          "kms:List*",
+          "kms:Put*",
+          "kms:Update*",
+          "kms:Revoke*",
+          "kms:Disable*",
+          "kms:Get*",
+          "kms:Delete*",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
 }
 
 # data "aws_iam_policy_document" "ecr_access_policy" {
