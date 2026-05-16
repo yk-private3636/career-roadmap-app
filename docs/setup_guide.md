@@ -88,7 +88,7 @@ terraform_assume_role_arn  = "arn:aws:iam::123456789012:role/prod-career-roadmap
 
 ```bash
 aws sts get-session-token \
-  --duration-seconds 14400 \
+  --duration-seconds 86400 \
   --serial-number arn:aws:iam::<account_id>:mfa/<device-name> \
   --token-code <6桁ワンタイム>
 ```
