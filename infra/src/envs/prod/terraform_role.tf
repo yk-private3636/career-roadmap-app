@@ -77,34 +77,127 @@ data "aws_iam_policy_document" "terraform_role_policy" {
   statement {
     effect = "Allow"
     actions = [
-      "iam:UpdateRole",
-      "iam:PutRolePolicy",
-      "iam:DeleteRole",
-      "iam:DeleteRolePolicy",
-      "iam:UpdateAssumeRolePolicy",
-      "iam:UntagRole",
-      "iam:AttachRolePolicy",
-      "iam:DetachRolePolicy",
+      "iam:Get*",
+      "iam:List*",
     ]
-    resources = [
-      "arn:aws:iam::${var.account_id}:role/${local.name}-*"
-    ]
+    resources = ["*"]
   }
 
   statement {
     effect = "Allow"
     actions = [
-      "iam:Get*",
-      "iam:List*",
       "iam:CreateRole",
+    ]
+    resources = [
+      "arn:aws:iam::${var.account_id}:role/${local.name}-*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:UpdateRole",
+      "iam:PutRolePolicy",
+      "iam:DeleteRole",
+      "iam:DeleteRolePolicy",
+      "iam:UpdateAssumeRolePolicy",
+      "iam:AttachRolePolicy",
+      "iam:DetachRolePolicy",
+      "iam:RemoveRoleFromInstanceProfile",
+    ]
+    resources = [
+      "arn:aws:iam::${var.account_id}:role/${local.name}-*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:ResourceTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
       "iam:TagRole",
+      "iam:UntagRole",
+    ]
+    resources = [
+      "arn:aws:iam::${var.account_id}:role/${local.name}-*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:CreateOpenIDConnectProvider",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "iam:DeleteOpenIDConnectProvider",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:ResourceTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
       "iam:TagOpenIDConnectProvider",
       "iam:UntagOpenIDConnectProvider",
-      "iam:CreateOpenIDConnectProvider",
-      "iam:DeleteOpenIDConnectProvider",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
       "iam:PassRole",
       "iam:CreateServiceLinkedRole",
-      "iam:RemoveRoleFromInstanceProfile",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeVpcs",
+      "ec2:DescribeVpcAttribute",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DescribeRouteTables",
+      "ec2:DescribeInternetGateways",
+      "ec2:DescribeNatGateways",
+      "ec2:DescribeAddresses",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSecurityGroupRules",
     ]
     resources = ["*"]
   }
@@ -113,44 +206,79 @@ data "aws_iam_policy_document" "terraform_role_policy" {
     effect = "Allow"
     actions = [
       "ec2:CreateVpc",
-      "ec2:DeleteVpc",
-      "ec2:DescribeVpcs",
-      "ec2:DescribeVpcAttribute",
-      "ec2:ModifyVpcAttribute",
       "ec2:CreateSubnet",
-      "ec2:DeleteSubnet",
-      "ec2:DescribeSubnets",
-      "ec2:DescribeNetworkInterfaces",
       "ec2:CreateRouteTable",
+      "ec2:CreateInternetGateway",
+      "ec2:CreateNatGateway",
+      "ec2:AllocateAddress",
+      "ec2:CreateSecurityGroup",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DeleteVpc",
+      "ec2:ModifyVpcAttribute",
+      "ec2:DeleteSubnet",
       "ec2:DeleteRouteTable",
       "ec2:AssociateRouteTable",
       "ec2:DisassociateRouteTable",
-      "ec2:DescribeRouteTables",
       "ec2:CreateRoute",
       "ec2:DeleteRoute",
-      "ec2:DescribeInternetGateways",
-      "ec2:CreateInternetGateway",
+      "ec2:ReplaceRoute",
       "ec2:DeleteInternetGateway",
       "ec2:AttachInternetGateway",
       "ec2:DetachInternetGateway",
-      "ec2:CreateNatGateway",
       "ec2:DeleteNatGateway",
-      "ec2:DescribeNatGateways",
-      "ec2:AllocateAddress",
       "ec2:ReleaseAddress",
-      "ec2:DescribeAddresses",
-      "ec2:CreateTags",
-      "ec2:DeleteTags",
-      "ec2:CreateSecurityGroup",
       "ec2:DeleteSecurityGroup",
-      "ec2:DescribeSecurityGroups",
       "ec2:RevokeSecurityGroupIngress",
       "ec2:RevokeSecurityGroupEgress",
+      "ec2:ModifySecurityGroupRules",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
       "ec2:AuthorizeSecurityGroupIngress",
       "ec2:AuthorizeSecurityGroupEgress",
-      "ec2:DescribeSecurityGroupRules",
-      "ec2:ModifySecurityGroupRules",
-      "ec2:ReplaceRoute"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:CreateTags",
+      "ec2:DeleteTags",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:DescribeRepositories",
+      "ecr:ListTagsForResource",
     ]
     resources = ["*"]
   }
@@ -160,10 +288,13 @@ data "aws_iam_policy_document" "terraform_role_policy" {
     actions = [
       "ecr:CreateRepository",
       "ecr:TagResource",
-      "ecr:ListTagsForResource",
-      "ecr:DescribeRepositories",
     ]
     resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
   }
 
   statement {
@@ -180,20 +311,87 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       "arn:aws:ecr:${var.aws_region[0]}:${var.account_id}:repository/${local.ecr_repository_name}",
       "arn:aws:ecr:${var.aws_region[0]}:${var.account_id}:repository/${local.ecr_repository_name}/*",
     ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "eks:DescribeCluster",
+      "eks:ListClusters",
+      "eks:DescribeNodegroup",
+      "eks:ListNodegroups",
+      "eks:DescribeAccessEntry",
+      "eks:DescribeUpdate",
+      "eks:ListAssociatedAccessPolicies",
+    ]
+    resources = ["*"]
   }
 
   statement {
     effect = "Allow"
     actions = [
       "eks:CreateCluster",
-      "eks:DeleteCluster",
-      "eks:UpdateClusterVersion",
-      "eks:UpdateClusterConfig",
-      "eks:DescribeUpdate",
     ]
     resources = [
       "arn:aws:eks:${var.aws_region[0]}:${var.account_id}:cluster/${local.eks_cluster_name}"
     ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "eks:DeleteCluster",
+      "eks:UpdateClusterVersion",
+      "eks:UpdateClusterConfig",
+      "eks:AssociateEncryptionConfig",
+    ]
+    resources = [
+      "arn:aws:eks:${var.aws_region[0]}:${var.account_id}:cluster/${local.eks_cluster_name}"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "eks:CreateNodegroup",
+      "eks:CreateAccessEntry",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "eks:DeleteNodegroup",
+      "eks:AssociateAccessPolicy",
+      "eks:DisassociateAccessPolicy",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Project"
+      values   = [var.project_name]
+    }
   }
 
   statement {
@@ -209,20 +407,24 @@ data "aws_iam_policy_document" "terraform_role_policy" {
   statement {
     effect = "Allow"
     actions = [
-      "eks:DescribeCluster",
-      "eks:ListClusters",
-      "eks:DescribeNodegroup",
-      "eks:ListNodegroups",
-      "eks:CreateNodegroup",
-      "eks:DeleteNodegroup",
-      "eks:DescribeAccessEntry",
       "eks:TagResource",
       "eks:UntagResource",
-      "eks:CreateAccessEntry",
-      "eks:ListAssociatedAccessPolicies",
-      "eks:DisassociateAccessPolicy",
-      "eks:AssociateAccessPolicy",
-      "eks:AssociateEncryptionConfig"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:DescribeKey",
+      "kms:ListResourceTags",
+      "kms:GetKeyPolicy",
+      "kms:GetKeyRotationStatus",
     ]
     resources = ["*"]
   }
@@ -230,19 +432,30 @@ data "aws_iam_policy_document" "terraform_role_policy" {
   statement {
     effect = "Allow"
     actions = [
-      "kms:TagResource",
       "kms:CreateKey",
-      "kms:ListResourceTags",
-      "kms:DescribeKey",
-      "kms:GetKeyPolicy",
-      "kms:GetKeyRotationStatus",
+      "kms:TagResource",
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Project"
+      values   = [var.project_name]
+    }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
       "kms:ScheduleKeyDeletion",
       "kms:PutKeyPolicy",
-      "kms:CreateGrant"
+      "kms:CreateGrant",
     ]
-    resources = [
-      "*"
-    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:ResourceTag/Project"
+      values   = [var.project_name]
+    }
   }
 }
 
