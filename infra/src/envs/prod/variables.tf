@@ -36,3 +36,10 @@ variable "terraform_assume_role_arn" {
   type      = string
   sensitive = true
 }
+
+variable "domain_names" {
+  type = object({
+    api = string
+    web = string
+  })
+}
