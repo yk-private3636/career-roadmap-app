@@ -1,5 +1,6 @@
 resources:
   - namespace/namespace.yml
   - api/deployment.yml
+  - api/service.yml
   - ingress/serviceaccount.yml
   - ingress/ingress.yml

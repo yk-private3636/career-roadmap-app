@@ -13,14 +13,14 @@ metadata:
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-path: /api/v1/health
 spec:
-  ingressClassName: api-ingress-class
+  ingressClassName: alb
   rules:
   - http:
       paths:
-      - path: /
-        pathType: Prefix
+      - path: /*
+        pathType: ImplementationSpecific
         backend:
           service:
-            name: api
+            name: api-service
             port:
               number: 80
