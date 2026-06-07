@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+  namespace: career-roadmap-app
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-name: career-roadmap-app-alb
+    alb.ingress.kubernetes.io/subnets: career-roadmap-app-alb-public-subnet-1,career-roadmap-app-alb-public-subnet-2
+    alb.ingress.kubernetes.io/tags: Environment=base,Project=career-roadmap-app
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-path: /api/v1/health
+spec:
+  ingressClassName: alb
+  rules:
+  - http:
+      paths:
+      - path: /*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: api-service
+            port:
+              number: 80

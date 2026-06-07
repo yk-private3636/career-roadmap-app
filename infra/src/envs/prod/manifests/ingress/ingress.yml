@@ -1,0 +1,9 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+  namespace: career-roadmap-app
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-name: prod-career-roadmap-app-alb
+    alb.ingress.kubernetes.io/subnets: prod-career-roadmap-app-public-subnet-1,prod-career-roadmap-app-public-subnet-2,prod-career-roadmap-app-public-subnet-3
+    alb.ingress.kubernetes.io/tags: Environment=prod,Project=career-roadmap-app
