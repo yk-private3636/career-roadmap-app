@@ -42,7 +42,7 @@ jobs:
         id: docker-terraform-version
         working-directory: infra
         run: |
-          echo "TERRAFORM_VERSION=$(grep -m 1 BASE_IMAGE ./Dockerfile | awk -F : '{print $2}' | awk -F - '{print $1}' | sed 's/^$/latest/')" >> "$GITHUB_OUTPUT"
+          echo "TERRAFORM_VERSION=$(grep -m 1 TERRAFORM_BASE_IMAGE ./Dockerfile | awk -F : '{print $2}' | awk -F - '{print $1}' | sed 's/^$/latest/')" >> "$GITHUB_OUTPUT"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
