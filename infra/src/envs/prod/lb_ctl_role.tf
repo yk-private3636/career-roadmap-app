@@ -2,13 +2,13 @@ module "lb_ctl_role" {
   source = "../../modules/iam_role"
 
   role_name               = local.lb_ctl_role_name
-  assume_role_policy_json = data.aws_iam_policy_document.lb_ctl_role_assume_role.json
+  assume_role_policy_json = data.aws_iam_policy_document.lb_ctl_assume_role.json
   policies = {
     (local.lb_ctl_role_policy_name) = data.aws_iam_policy_document.lb_ctl_role_policy.json
   }
 }
 
-data "aws_iam_policy_document" "lb_ctl_role_assume_role" {
+data "aws_iam_policy_document" "lb_ctl_assume_role" {
   statement {
     effect = "Allow"
     actions = [
@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "lb_ctl_role_assume_role" {
     condition {
       test     = "StringLike"
       variable = "${local.eks_cluster_oidc_provider_name}:sub"
-      values   = ["system:serviceaccount:${local.eks_namespace_name}:${local.eks_service_account_name}"]
+      values   = ["system:serviceaccount:${local.eks_namespace_name}:${local.eks_ingress_ctl_sa_name}"]
     }
   }
 }

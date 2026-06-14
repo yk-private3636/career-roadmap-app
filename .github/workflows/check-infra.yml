@@ -71,6 +71,10 @@ jobs:
           aws_az                                = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
           account_id                            = "${{ secrets.AWS_ACCOUNT_ID }}"
           terraform_assume_role_arn             = "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/prod-career-roadmap-app-terraform-role"
+          domain_names                          = {
+            api = "career-roadmap.app"
+            web = ""
+          }
           EOF
 
       - name: Terraform Plan Check
