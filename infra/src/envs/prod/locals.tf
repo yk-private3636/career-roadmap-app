@@ -23,5 +23,5 @@ locals {
   eks_cluster_oidc_provider_name = replace(module.eks.oidc_issuer, "https://", "")
   eks_namespace_name             = local.name
   eks_ingress_ctl_sa_name        = "${var.env}-ingress-controller-serviceaccount"
-  eks_ingress_ext_dns_sa_name    = "ingress-external-dns-serviceaccount"
+  eks_ingress_ext_dns_sa_name    = "${var.env}-ingress-external-dns-serviceaccount"
 }

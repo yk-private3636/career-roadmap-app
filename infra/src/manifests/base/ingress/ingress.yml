@@ -13,10 +13,12 @@ metadata:
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCOUNT_ID:certificate/IDENTIFIER
     alb.ingress.kubernetes.io/healthcheck-path: /api/v1/health
+    external-dns.kubernetes.io/hostname: career-roadmap-api.app
 spec:
   ingressClassName: alb
   rules:
-  - http:
+  - host: career-roadmap-api.app
+    http:
       paths:
       - path: /*
         pathType: ImplementationSpecific
