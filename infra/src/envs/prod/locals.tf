@@ -7,6 +7,9 @@ locals {
   lb_ctl_role_name        = "${local.name}-lb-ctl-role"
   lb_ctl_role_policy_name = "${local.name}-lb-ctl-role-policy"
 
+  ext_dns_role_name        = "${local.name}-ext-dns-role"
+  ext_dns_role_policy_name = "${local.name}-ext-dns-role-policy"
+
   subnet_public_name  = "${local.name}-public-subnet"
   subnet_private_name = "${local.name}-private-subnet"
 
@@ -19,5 +22,6 @@ locals {
   eks_cluster_sg_name            = "${local.name}-eks-cluster-sg"
   eks_cluster_oidc_provider_name = replace(module.eks.oidc_issuer, "https://", "")
   eks_namespace_name             = local.name
-  eks_service_account_name       = "${var.env}-ingress-controller-serviceaccount"
+  eks_ingress_ctl_sa_name        = "${var.env}-ingress-controller-serviceaccount"
+  eks_ingress_ext_dns_sa_name    = "ingress-external-dns-serviceaccount"
 }
