@@ -8,13 +8,13 @@ set -o pipefail
 echo "🚀 Setting up career-roadmap-app environment..."
 
 envSetup() {
-    cp --update=none ${1}/.env.example ${1}/.env
+    [ -e "${1}/.env" ] || cp "${1}/.env.example" "${1}/.env"
 }
 
 infraSetup() {
-    cp --update=none ${1}/.env.example ${1}/.env
-    for dir in $(ls -d ${1}/src/envs/*/); do
-        cp --update=none ${1}/terraform.tfvars.example ${dir}/terraform.tfvars
+    [ -e "${1}/.env" ] || cp "${1}/.env.example" "${1}/.env"
+    for dir in "${1}"/src/envs/*/; do
+        [ -e "${dir}/terraform.tfvars" ] || cp "${1}/terraform.tfvars.example" "${dir}/terraform.tfvars"
     done
 }
 
