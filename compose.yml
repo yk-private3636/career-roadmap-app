@@ -172,6 +172,7 @@ services:
         condition: service_healthy
     volumes:
       - ./web/src:/var/www/html
+      - /var/www/html/node_modules
     networks:
       - frontend
 
