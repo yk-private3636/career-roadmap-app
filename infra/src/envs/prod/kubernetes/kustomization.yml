@@ -7,4 +7,5 @@ namePrefix: prod-
 
 patches:
 - path: api/deployment.yml
+- path: batch/helloworld/cronjob.yml
 - path: ingress/ingress.yml

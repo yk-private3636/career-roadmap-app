@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: batch-helloworld
+  namespace: career-roadmap-app
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: batch-helloworld
+            image: batch/helloworld:latest
+            imagePullPolicy: IfNotPresent
+          restartPolicy: OnFailure
+          startingDeadlineSeconds: 30
+          concurrencyPolicy: Forbid
+          successfulJobsHistoryLimit: 1
+          failedJobsHistoryLimit: 3
