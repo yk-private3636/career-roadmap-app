@@ -20,9 +20,7 @@ career-roadmap-app/
 ├── compose.yml                           # ローカル全体の Docker Compose 定義
 ├── setup.sh                              # 初回セットアップスクリプト (.env / tfvars 生成)
 ├── system_architecture_diagram.drawio.png # アーキテクチャ図
-├── README.md                             # リポジトリ概要
-├── AGENTS.md                             # AI エージェント向けの作業前提・読み込み指示
-└── CLAUDE.md                             # Claude Code 用 (AGENTS.md を参照)
+└── README.md                             # リポジトリ概要
 ```
 
 ## 各単位の役割
@@ -61,5 +59,3 @@ career-roadmap-app/
 | `README.md` | リポジトリ概要・背景・アーキテクチャ図表示 |
 | `docs/` | 詳細ドキュメント (プロダクト要件 / セットアップ / アーキテクチャ評価 等) |
 | `system_architecture_diagram.drawio.png` | アーキテクチャ図の実体 |
-| `AGENTS.md` | AI エージェントが作業前に読むべき指示・ドキュメントの動的分岐 |
-| `CLAUDE.md` | Claude Code 用エントリ。中身は `AGENTS.md` を参照するだけ |

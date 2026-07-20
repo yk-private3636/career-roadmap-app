@@ -68,14 +68,14 @@ docker compose down -v
 
 ### 3.2 `terraform_role` は初回に作成し、以後**削除してはならない**
 
-`infra/src/envs/prod/terraform_role.tf` で定義されている `${env}-${project_name}-terraform-role` は **Terraform が自身を実行するための assume role 先**。削除すると `provider.tf` の `assume_role` で参照しているロールが消失し、Terraform 操作自体が不可能になる (再構築には IAM ユーザー直接権限による緊急復旧が必要)。
+`infra/src/envs/prod/terraform/terraform_role.tf` で定義されている `${env}-${project_name}-terraform-role` は **Terraform が自身を実行するための assume role 先**。削除すると `provider.tf` の `assume_role` で参照しているロールが消失し、Terraform 操作自体が不可能になる (再構築には IAM ユーザー直接権限による緊急復旧が必要)。
 
 - 初回は **コンソール等で手動作成** → `imports.tf` の `import` ブロックで Terraform 管理下に取り込む構成になっている
 - `terraform destroy` の対象から外すこと。「触らない時は destroy」運用を行う際も、本ロールは破棄しない層に置く
 
 ### 3.3 `terraform.tfvars` の設定
 
-`infra/src/envs/prod/terraform.tfvars` に以下を記入する。
+`infra/src/envs/prod/terraform/terraform.tfvars` に以下を記入する。
 
 ```hcl
 account_id                 = "123456789012"
@@ -112,7 +112,7 @@ TF_LOG=
 docker compose up -d infra
 docker compose exec infra sh
 # コンテナ内
-cd prod
+cd prod/terraform
 terraform init
 terraform plan
 terraform apply

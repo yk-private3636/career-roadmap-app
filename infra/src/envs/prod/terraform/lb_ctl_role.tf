@@ -1,5 +1,5 @@
 module "lb_ctl_role" {
-  source = "../../modules/iam_role"
+  source = "../../../modules/iam_role"
 
   role_name               = local.lb_ctl_role_name
   assume_role_policy_json = data.aws_iam_policy_document.lb_ctl_assume_role.json

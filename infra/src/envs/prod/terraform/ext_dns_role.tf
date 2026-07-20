@@ -1,5 +1,5 @@
 module "ext_dns_role" {
-  source = "../../modules/iam_role"
+  source = "../../../modules/iam_role"
 
   role_name               = local.ext_dns_role_name
   assume_role_policy_json = data.aws_iam_policy_document.ext_dns_assume_role.json

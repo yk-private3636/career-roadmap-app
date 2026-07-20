@@ -1,5 +1,5 @@
 module "ecr" {
-  source = "../../modules/ecr"
+  source = "../../../modules/ecr"
 
   repository_name = local.ecr_repository_name
   force_delete    = true

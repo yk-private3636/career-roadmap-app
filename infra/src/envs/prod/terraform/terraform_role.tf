@@ -6,7 +6,7 @@ import {
 }
 
 module "terraform_role" {
-  source = "../../modules/iam_role"
+  source = "../../../modules/iam_role"
 
   role_name               = local.terraform_role_name
   assume_role_policy_json = data.aws_iam_policy_document.terraform_assume_role_policy.json
@@ -463,6 +463,27 @@ data "aws_iam_policy_document" "terraform_role_policy" {
       variable = "aws:ResourceTag/Project"
       values   = [var.project_name]
     }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "route53:ListHostedZones",
+      "route53:ListHostedZonesByName",
+      "route53:ListResourceRecordSets",
+      "route53:ListTagsForResource",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "route53:GetHostedZone",
+    ]
+    resources = [
+      "arn:aws:route53:::hostedzone/${data.aws_route53_zone.api.zone_id}"
+    ]
   }
 }
 

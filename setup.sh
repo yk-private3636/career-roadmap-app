@@ -14,7 +14,7 @@ envSetup() {
 infraSetup() {
     [ -e "${1}/.env" ] || cp "${1}/.env.example" "${1}/.env"
     for dir in "${1}"/src/envs/*/; do
-        [ -e "${dir}/terraform.tfvars" ] || cp "${1}/terraform.tfvars.example" "${dir}/terraform.tfvars"
+        [ -e "${dir}/terraform/terraform.tfvars" ] || cp "${1}/terraform.tfvars.example" "${dir}/terraform/terraform.tfvars"
     done
 }
 
