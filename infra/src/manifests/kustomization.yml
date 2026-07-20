@@ -2,6 +2,7 @@ resources:
   - namespace/namespace.yml
   - api/deployment.yml
   - api/service.yml
+  - batch/helloworld/cronjob.yml
   - extdns/deployment.yml
   - extdns/role.yml
   - extdns/serviceaccount.yml
