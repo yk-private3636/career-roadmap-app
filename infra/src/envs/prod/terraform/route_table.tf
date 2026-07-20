@@ -1,5 +1,5 @@
 module "public_route_table" {
-  source = "../../modules/route_table"
+  source = "../../../modules/route_table"
 
   vpc_id     = aws_vpc.main.id
   subnet_ids = [for s in aws_subnet.public : s.id]
@@ -10,7 +10,7 @@ module "public_route_table" {
 }
 
 module "private_route_table" {
-  source = "../../modules/route_table"
+  source = "../../../modules/route_table"
 
   vpc_id     = aws_vpc.main.id
   subnet_ids = [for s in aws_subnet.private : s.id]

@@ -18,8 +18,7 @@ RUN apk del tzdata
 COPY --from=kustomize /app/kustomize /usr/local/bin/kustomize
 RUN chmod +x /usr/local/bin/kustomize
 
-RUN adduser -D infra
-
-# USER infra
+RUN adduser -u 1000 -s /bin/sh --disabled-password --gecos "" infra
+USER infra
 
 ENTRYPOINT [ "tail", "-f", "/dev/null" ]
